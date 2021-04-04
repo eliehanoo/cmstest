@@ -11,7 +11,8 @@ router.all('/*', (req, res, next) => {
     next();
 })
 
-
+router.route('/index')
+    .get(defaultController.search);
 
 router.route('/')
     .get(defaultController.index);

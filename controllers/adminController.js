@@ -81,36 +81,54 @@ module.exports = {
             })
     },
 
-    editPostUpdateRoute: (req, res) => {
+    editPostUpdateRoute: async (req, res) => {
         const commentsAllowed = req.body.allowComments ? true : false;
 
-
-        const id = req.params.id;
-
-        Post.findById(id).lean()
-            .then(post => {
-                const newPost = new Post({
-               title : req.body.title,
-                status :req.body.status,
-                allowComments : req.body.allowComments,
-               description : req.body.description,
-                category : req.body.category,
-
-                })
-                newPost.save().then(updatePost => {
-                    req.flash('success-message', `The Post ${updatePost.title} has been updated.`);
-                    res.redirect('/admin/posts');
-
-                });
+        let filename = req.body.currentImg;
+        
+        if(!isEmpty(req.files)) {
+            let file = req.files.uploadedFile;
+            filename = file.name;
+            let uploadDir = './public/uploads/';
+            
+            file.mv(uploadDir+filename, (err) => {
+                if (err){
+                    throw err;
+                    console.log(err)
+                }
+                   
             });
+            filename = `/uploads/${filename}`;
+        }
 
-    },
+let edit;
+    
+try{
+    edit = await Post.findById(req.params.id);
+   edit.title = req.body.title;
+   edit.status = req.body.status;
+   edit.allowComments = commentsAllowed;
+   edit.description = req.body.description;
+   edit.category = req.body.category;
+   edit.file = filename;
+await   edit.save().then(updatePost => {
+    req.flash('success-message', `The Post ${updatePost.title} has been updated.`);
+    res.redirect('/admin/posts');
+
+});
+  
+}catch(e){
+edit == null ? res.redirect('/') : res.render('/admin/posts',{edit : edit,errorMessage : 'Error Updating Author'});
+
+}
+},
+        
 
     deletePost: (req, res) => {
 
         Post.findByIdAndDelete(req.params.id).lean()
             .then(deletedPost => {
-                req.flash('success-message', `The post ${deletedPost.title} has been deleted.`);
+                req.flash('success-message', `The post ${req.params.id} has been deleted.`);
                 res.redirect('/admin/posts');
             });
     },
