@@ -12,8 +12,8 @@ const session = require('express-session');
 const methodOverride = require('method-override');
 const {selectOption} = require('./config/customFunctions');
 const fileUpload = require('express-fileupload');
-const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
-const insecureHandlebars = allowInsecurePrototypeAccess(hbs);
+//const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
+//const insecureHandlebars = allowInsecurePrototypeAccess(hbs);
 const app = express();
 
 
@@ -54,7 +54,9 @@ app.use(globalVariables);
 app.use(fileUpload());
 
 /* Setup View Engine To Use Handlebars */
-app.engine('handlebars', hbs({defaultLayout: 'default',hbs : allowInsecurePrototypeAccess(hbs), helpers: {select: selectOption}}));
+app.engine('handlebars', hbs({defaultLayout: 'default'
+/* ,hbs : allowInsecurePrototypeAccess(hbs)*/
+, helpers: {select: selectOption}}));
 app.set('view engine' , 'handlebars');
 
 

@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@handlebars/allow-prototype-access": "^1.0.3",
     "connect-flash": "^0.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
